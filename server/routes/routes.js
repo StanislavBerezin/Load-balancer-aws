@@ -6,7 +6,7 @@ module.exports = (app) => {
 
     // setting up routes
 
-    app.get('/new',
+    app.get('/streamTweets',
         MainControl.searchTweets)
 
 

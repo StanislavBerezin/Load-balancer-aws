@@ -13,10 +13,12 @@ var Twitter = new Twit({
     access_token_secret: "eSdfw7DUEa0zMTpBBYmHcVjSrkwr8TGcETRP4hYLO795m"
 });
 
+const socket = require('socket.io')
+
+let server = require('../app')
 
 
-
-
+var io = socket(server)
 
 module.exports = {
     // Displaying the basic news on the first page
@@ -26,11 +28,20 @@ module.exports = {
             track: '#apple',
             language: 'en'
         })
+        io.on('connection', function (socket) {
+            var sock = socket;
+            stream.on('tweet', function (tweet) {
+                console.log(tweet.text)
+                sock.emit('tweets', {
+                    message: tweet.text
+                })
 
-        stream.on('tweet', function (tweet) {
-            console.log(tweet)
-            res.send(tweet)
+            })
+
+
+
         })
+
 
 
     },

@@ -5,6 +5,9 @@ import axios from "../Axios";
 import Aux from "../Aux/Aux";
 import { ClipLoader } from "react-spinners";
 
+import { socketConnect } from "socket.io-react";
+import io from "socket.io-client";
+
 class Main extends Component {
   state = {
     searchedTweets: [],
@@ -20,26 +23,21 @@ class Main extends Component {
   handleStaticSearch = event => {
     event.preventDefault();
     console.log("static");
+
+    axios
+      .get("/streamTweets", { search: "Trump" })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
   handleLiveSearch = event => {
     event.preventDefault();
 
     console.log("live");
-
-    // this.setState({ defaultNews: [], searchNews: [], loading: true });
-    // axios
-    //   .post("/searchNews", {
-    //     search: this.state.search
-    //   })
-    //   .then(response => {
-    //     const searchNews = response.data.articles.slice(0, 11);
-
-    //     this.setState({ searchNews, loading: false });
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //   });
   };
 
   render() {
