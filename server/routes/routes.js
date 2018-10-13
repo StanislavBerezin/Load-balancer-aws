@@ -6,7 +6,7 @@ module.exports = (app) => {
 
     // setting up routes
 
-    app.get('/news',
+    app.get('/new',
         MainControl.searchTweets)
 
 
