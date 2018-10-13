@@ -1,0 +1,71 @@
+.Main {
+	min-height: 100vh;
+	max-width: 1024px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+input[type=submit] {
+	height: 50px;
+	cursor: pointer;
+	background: #ccc;
+	padding: 10px;
+	border: 2px solid #ccc;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	background-color: #6C5B7B;
+
+	color: #fff;
+	font-size: 15px;
+	transition: 1s ease-in-out;
+	outline: none;
+
+	margin-top: 10px;
+}
+
+input[type=submit]:hover {
+	background-color: #C06C84;
+
+}
+
+input[type=search] {
+	padding: 5px;
+	border: 2px solid #ccc;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	outline: none;
+	height: 50px;
+	width: 100%;
+	transition: 1s ease-in-out;
+	margin-right: 20px;
+}
+
+input[type=search]:focus {
+	border-color: #6C5B7B;
+}
+
+.form {
+	width: 400px;
+}
+
+.Bar {
+	display: flex;
+	justify-content: center;
+}
+
+.searchButtons {
+	display: flex;
+	justify-content: space-around;
+}
+
+.Cards {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	flex-direction: row;
+	margin: 0 auto;
+}
+
+.Fix {
+	margin-top: 20px;
+}

@@ -1,0 +1,19 @@
+.Nav {
+    display: flex;
+    background: linear-gradient(to right, #3c1053, #ad5389);
+    color: #fff;
+    padding: 20px;
+}
+
+.Nav a {
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 1s;
+    background-color: #6C5B7B;
+    color: #fff;
+}
+
+.Nav a:hover {
+    background-color: #C06C84;
+}

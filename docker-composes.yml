@@ -1,0 +1,11 @@
+version: '3'
+services:
+  nginx:
+    restart: always
+    image: 'coconicola/nginx'
+    ports:
+      - '2000:80'
+  api:
+    image: 'coconicola/server'
+  client:
+    image: 'coconicola/client'
