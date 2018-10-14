@@ -70,8 +70,9 @@ class Main extends Component {
       negWords: [],
       posWords: []
     });
+    // http://localhost:8080
     axios.post("/specificSearch", { search });
-    const socket = socketIOClient("http://localhost:8080");
+    const socket = socketIOClient("/api");
     socket.on("connect", () => {
       console.log("Socket Connected");
       socket.on("tweets", data => {

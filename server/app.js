@@ -5,7 +5,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const helmet = require('helmet')
 const config = require('./config/config')
-const socket = require('socket.io')
+
 const http = require('http')
 
 
@@ -13,8 +13,7 @@ const http = require('http')
 
 
 const app = express()
-const server = http.createServer(app)
-var io = socket(server)
+
 
 // using packages
 app.use(morgan('dev'))
@@ -24,12 +23,16 @@ app.use(cors())
 
 
 //requireing app and passing the object of this app
-require('./routes/routes')(app, io)
+
 
 
 
 // configuring the port which is from config folder
-server.listen(config.port, function (err) {
+let server = app.listen(config.port, function (err) {
 	if (err) throw err;
 	console.log("Server started on port " + config.port);
 });
+
+const io = require('socket.io').listen(server)
+
+require('./routes/routes')(app, io)

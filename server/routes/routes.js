@@ -25,40 +25,45 @@ module.exports = (app, io) => {
      * Resumes twitter stream.
      */
     const stream = () => {
-        if (app.locals.searchWord === "none") {
-            console.log("nothing to search for");
-        } else {
-            console.log("Getting tweets for " + app.locals.searchWord);
-            twitter.stream(
-                "statuses/filter", {
-                    track: app.locals.searchWord
-                },
-                stream => {
-                    stream.on("data", tweet => {
-                        var result = sentiment.analyze(tweet.text);
-                        // result.positive and result.negative
+        try {
+            if (app.locals.searchWord === "none") {
+                console.log("nothing to search for");
+            } else {
+                console.log("Getting tweets for " + app.locals.searchWord);
+                twitter.stream(
+                    "statuses/filter", {
+                        track: app.locals.searchWord
+                    },
+                    stream => {
+                        stream.on("data", tweet => {
+                            var result = sentiment.analyze(tweet.text);
+                            // result.positive and result.negative
 
-                        if (result.score != 0) {
-                            let sentimentObject = {
-                                score: result.score,
-                                positiveWords: result.positive,
-                                negativeWords: result.negative
+                            if (result.score != 0) {
+                                let sentimentObject = {
+                                    score: result.score,
+                                    positiveWords: result.positive,
+                                    negativeWords: result.negative
+                                }
+
+                                console.log(sentimentObject)
+                                sendMessage(sentimentObject);
                             }
 
+                        });
 
-                            sendMessage(sentimentObject);
-                        }
+                        stream.on("error", error => {
 
-                    });
+                        });
 
-                    stream.on("error", error => {
-                        console.log("error");
-                    });
-
-                    twitterStream = stream;
-                }
-            );
+                        twitterStream = stream;
+                    }
+                );
+            }
+        } catch (e) {
+            console.log(e)
         }
+
     };
 
     /**
@@ -78,10 +83,15 @@ module.exports = (app, io) => {
      */
     app.post("/stop", (req, res) => {
         console.log("Stop");
-        twitterStream.destroy();
-        socketConnection.disconnect();
-        app.locals.searchWord = "none";
-        res.status(200).send("done");
+        try {
+            twitterStream.destroy();
+            socketConnection.disconnect();
+            app.locals.searchWord = "none";
+            res.status(200).send("done");
+        } catch (e) {
+            console.log(e)
+        }
+
     });
 
     app.get("/streamTweets", MainControl.searchTweets);
