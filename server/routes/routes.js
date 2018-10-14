@@ -1,13 +1,11 @@
-const MainControl = require('../controllers/MainController')
-
+const MainControl = require("../controllers/MainController");
 var Twitter = require("twitter");
 
-
+var Sentiment = require("sentiment");
 
 //recieves object of express app and makes routes
 
 module.exports = (app, io) => {
-
     var twitter = new Twitter({
         consumer_key: "C2tUjaWK9qOOU6BFWIMd52v45",
         consumer_secret: "FIAjgruq3Kx09Iwwh0NiQYPp7wLyzG4wFzfSHiRowLBjy8S4md",
@@ -18,69 +16,69 @@ module.exports = (app, io) => {
     let socketConnection;
     let twitterStream;
 
-    app.locals.searchTerm = 'none'; //Default search term for twitter stream.
+    app.locals.searchWord = "none"; //Default search term for twitter stream.
     app.locals.showRetweets = false; //Default
+
+    var sentiment = new Sentiment();
 
     /**
      * Resumes twitter stream.
      */
     const stream = () => {
-        if (app.locals.searchTerm === 'none') {
-            console.log('nothing to search for')
-
+        if (app.locals.searchWord === "none") {
+            console.log("nothing to search for");
         } else {
-            console.log('Resuming for ' + app.locals.searchTerm);
-            twitter.stream('statuses/filter', {
-                track: app.locals.searchTerm
-            }, (stream) => {
-                stream.on('data', (tweet) => {
+            console.log("Getting tweets for " + app.locals.searchWord);
+            twitter.stream(
+                "statuses/filter", {
+                    track: app.locals.searchWord
+                },
+                stream => {
+                    stream.on("data", tweet => {
+                        var result = sentiment.analyze(tweet.text);
+                        // result.positive and result.negative
 
-                    sendMessage(tweet);
-                });
+                        if (result.score != 0) {
+                            console.log(result.score);
+                            sendMessage(result.score);
+                        }
 
-                stream.on('error', (error) => {
-                    console.log("error");
-                });
+                    });
 
-                twitterStream = stream;
-            });
+                    stream.on("error", error => {
+                        console.log("error");
+                    });
+
+                    twitterStream = stream;
+                }
+            );
         }
-
-    }
+    };
 
     /**
-     * Sets search term for twitter stream.
+     * Sets search word for twitter stream.
      */
-    app.post('/specificSearch', async (req, res) => {
+    app.post("/specificSearch", async (req, res) => {
         let term = await req.body.search;
-        console.log(term)
-        app.locals.searchTerm = term;
-
-
-
+        console.log(term);
+        app.locals.searchWord = term;
 
         stream();
-        res.send('s')
+        res.send("s");
     });
 
     /**
      * Pauses the twitter stream.
      */
-    app.post('/stop', (req, res) => {
-        console.log('Stop');
+    app.post("/stop", (req, res) => {
+        console.log("Stop");
         twitterStream.destroy();
         socketConnection.disconnect();
-        app.locals.searchTerm = 'none';
-        res.status(200).send('done')
-
+        app.locals.searchWord = "none";
+        res.status(200).send("done");
     });
 
-
-
-
-    app.get('/streamTweets',
-        MainControl.searchTweets)
-
+    app.get("/streamTweets", MainControl.searchTweets);
 
     //Establishes socket connection.
     io.on("connection", socket => {
@@ -90,15 +88,8 @@ module.exports = (app, io) => {
         socket.on("disconnect", () => console.log("Client disconnected"));
     });
 
-    /**
-     * Emits data from stream.
-     * @param {String} msg 
-     */
-    const sendMessage = (msg) => {
-        if (msg.text.includes('RT')) {
-            return;
-        }
-        socketConnection.emit("tweets", msg);
-    }
 
-}
+    const sendMessage = msg => {
+        socketConnection.emit("tweets", msg);
+    };
+};

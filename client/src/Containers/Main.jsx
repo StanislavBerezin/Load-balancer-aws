@@ -5,17 +5,17 @@ import axios from "../Axios";
 import Aux from "../Aux/Aux";
 import { ClipLoader } from "react-spinners";
 import socketIOClient from "socket.io-client";
-import { socketConnect } from "socket.io-react";
-import io from "socket.io-client";
+
+import { PieChart, Pie, Sector, Cell } from "recharts";
 
 class Main extends Component {
   state = {
     searchedTweets: [],
-    items: [],
+    items: ["s", "aa"],
     search: "Trump",
     loading: false,
-    searchTerm: "JavaScript",
-    error: false
+    error: false,
+    goodBad: [{ good: "good", value: 100 }, { bad: "bad", value: 50 }]
   };
 
   handleChange = event => {
@@ -36,11 +36,12 @@ class Main extends Component {
       });
   };
 
-  handleStop(event) {
+  handleStop = event => {
     event.preventDefault();
     console.log("shoud stop");
     axios.post("/stop");
-  }
+    console.log(this.state.items);
+  };
 
   handleSpecific() {}
 
@@ -53,9 +54,8 @@ class Main extends Component {
     socket.on("connect", () => {
       console.log("Socket Connected");
       socket.on("tweets", data => {
-        console.info(data);
-        let newList = [data].concat(this.state.items.slice(0, 15));
-        this.setState({ items: newList });
+        let newList = [data].concat(this.state.goodBad[0].value);
+        this.setState({ goodBad: newList });
       });
     });
 
@@ -67,6 +67,34 @@ class Main extends Component {
   };
 
   render() {
+    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      percent,
+      index
+    }) => {
+      const radius = innerRadius + (outerRadius - innerRadius) * 0.3;
+      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+      return (
+        <text
+          x={x}
+          y={y}
+          fill="white"
+          textAnchor={x > cx ? "start" : "end"}
+          dominantBaseline="central"
+        >
+          {`${index > 0 ? "negative" : "positive"}`}
+        </text>
+      );
+    };
+
     return (
       <div>
         {/* intro screen */}
@@ -96,6 +124,23 @@ class Main extends Component {
               </div>
             </form>
           </div>
+
+          <PieChart width={1000} height={1000} onMouseEnter={this.onPieEnter}>
+            <Pie
+              dataKey={this.state.goodBad[0].value}
+              data={this.state.goodBad}
+              cx={300}
+              cy={200}
+              labelLine={false}
+              label={renderCustomizedLabel}
+              outerRadius={80}
+              fill="#8884d8"
+            >
+              {this.state.goodBad.map((entry, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+          </PieChart>
 
           <div className="sweet-loading">
             {/* loading circle */}
