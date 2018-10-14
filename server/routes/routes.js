@@ -39,8 +39,14 @@ module.exports = (app, io) => {
                         // result.positive and result.negative
 
                         if (result.score != 0) {
-                            console.log(result.score);
-                            sendMessage(result.score);
+                            let sentimentObject = {
+                                score: result.score,
+                                positiveWords: result.positive,
+                                negativeWords: result.negative
+                            }
+
+
+                            sendMessage(sentimentObject);
                         }
 
                     });

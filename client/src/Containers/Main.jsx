@@ -6,16 +6,23 @@ import Aux from "../Aux/Aux";
 import { ClipLoader } from "react-spinners";
 import socketIOClient from "socket.io-client";
 
-import { PieChart, Pie, Sector, Cell } from "recharts";
+import PieChart from "react-minimal-pie-chart";
 
 class Main extends Component {
   state = {
-    searchedTweets: [],
-    items: ["s", "aa"],
-    search: "Trump",
+    search: "",
+    title: "",
     loading: false,
     error: false,
-    goodBad: [{ good: "good", value: 100 }, { bad: "bad", value: 50 }]
+    positive: 10,
+    negative: 10,
+    negativePie: 10,
+    positivePie: 10,
+    sum: 0,
+    negPercent: 50,
+    posPercent: 50,
+    negWords: [],
+    posWords: []
   };
 
   handleChange = event => {
@@ -35,12 +42,15 @@ class Main extends Component {
         console.log(e);
       });
   };
+  getSum(total, num) {
+    return total + num;
+  }
 
   handleStop = event => {
     event.preventDefault();
     console.log("shoud stop");
+
     axios.post("/stop");
-    console.log(this.state.items);
   };
 
   handleSpecific() {}
@@ -49,13 +59,52 @@ class Main extends Component {
     event.preventDefault();
     console.log("live");
     let search = this.state.search;
+    this.setState({
+      title: this.state.search,
+      negativePie: 10,
+      positivePie: 10,
+      positive: 10,
+      negative: 10,
+      negPercent: 50,
+      posPercent: 50,
+      negWords: [],
+      posWords: []
+    });
     axios.post("/specificSearch", { search });
     const socket = socketIOClient("http://localhost:8080");
     socket.on("connect", () => {
       console.log("Socket Connected");
       socket.on("tweets", data => {
-        let newList = [data].concat(this.state.goodBad[0].value);
-        this.setState({ goodBad: newList });
+        let sum = this.state.positivePie + this.state.negativePie;
+        this.setState({ sum: sum });
+
+        if (data.score > 0) {
+          let positiveNum = [data.score].concat(this.state.positive);
+          let positiveWords = [data.positiveWords].concat(this.state.posWords);
+          let percent = (this.state.positivePie * 100) / this.state.sum;
+          this.setState({
+            positive: positiveNum,
+            posPercent: percent,
+            posWords: positiveWords
+          });
+
+          this.setState({
+            positivePie: this.state.positive.reduce(this.getSum)
+          });
+          console.log(this.state.positivePie);
+        } else {
+          let negativeNum = [data.score].concat(this.state.negative);
+          let negativeWords = [data.negativeWords].concat(this.state.negWords);
+          let percent = (this.state.negativePie * 100) / this.state.sum;
+          this.setState({
+            negative: negativeNum,
+            negPercent: percent,
+            negWords: negativeWords
+          });
+          this.setState({
+            negativePie: Math.abs(this.state.negative.reduce(this.getSum))
+          });
+        }
       });
     });
 
@@ -67,33 +116,14 @@ class Main extends Component {
   };
 
   render() {
-    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-    const RADIAN = Math.PI / 180;
-    const renderCustomizedLabel = ({
-      cx,
-      cy,
-      midAngle,
-      innerRadius,
-      outerRadius,
-      percent,
-      index
-    }) => {
-      const radius = innerRadius + (outerRadius - innerRadius) * 0.3;
-      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-      const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-      return (
-        <text
-          x={x}
-          y={y}
-          fill="white"
-          textAnchor={x > cx ? "start" : "end"}
-          dominantBaseline="central"
-        >
-          {`${index > 0 ? "negative" : "positive"}`}
-        </text>
-      );
-    };
+    let posWords = null;
+    posWords = this.state.posWords.map(e => {
+      return <li>{e}</li>;
+    });
+    let negWords = null;
+    negWords = this.state.negWords.map(e => {
+      return <li>{e}</li>;
+    });
 
     return (
       <div>
@@ -125,22 +155,44 @@ class Main extends Component {
             </form>
           </div>
 
-          <PieChart width={1000} height={1000} onMouseEnter={this.onPieEnter}>
-            <Pie
-              dataKey={this.state.goodBad[0].value}
-              data={this.state.goodBad}
-              cx={300}
-              cy={200}
-              labelLine={false}
-              label={renderCustomizedLabel}
-              outerRadius={80}
-              fill="#8884d8"
-            >
-              {this.state.goodBad.map((entry, index) => (
-                <Cell key={index} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-          </PieChart>
+          <h1>Statistics for {this.state.title}</h1>
+          <p>
+            Positive {this.state.posPercent.toString().substr(0, 4)} %{" "}
+            <span className={classess.pos}> __</span>
+          </p>
+          <p>
+            Negative {this.state.negPercent.toString().substr(0, 4)} %{" "}
+            <span className={classess.neg}> __</span>
+          </p>
+
+          <div className={classess.statistics}>
+            <div>
+              <PieChart
+                className={classess.chart}
+                data={[
+                  {
+                    title: "Test",
+                    value: this.state.positivePie,
+                    color: "#E38627"
+                  },
+                  {
+                    title: "Two",
+                    value: this.state.negativePie,
+                    color: "#C13C37"
+                  }
+                ]}
+              />
+            </div>
+
+            <div className={classess.goodWords}>
+              <h4>Positive words</h4>
+              <ul>{posWords}</ul>
+            </div>
+            <div className={classess.badWords}>
+              <h4>Negative words</h4>
+              <ul>{negWords}</ul>
+            </div>
+          </div>
 
           <div className="sweet-loading">
             {/* loading circle */}

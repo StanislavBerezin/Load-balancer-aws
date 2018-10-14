@@ -22,6 +22,7 @@
     "lodash": "^4.17.11",
     "morgan": "^1.9.0",
     "nodemon": "^1.18.4",
+    "react-minimal-pie-chart": "^3.3.0",
     "sentiment": "^5.0.1",
     "socket.io": "^2.1.1",
     "twit": "^2.2.11",

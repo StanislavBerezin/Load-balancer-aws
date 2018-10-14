@@ -71,6 +71,46 @@ input[type=search]:focus {
 }
 
 .chart {
-	width: 1000px;
-	height: 1000px;
+	width: 300px;
+	height: 300px;
+}
+
+.pos {
+	width: 10px !important;
+	height: 10px !important;
+	color: #E38627;
+	background-color: #E38627;
+	overflow: hidden;
+}
+
+.neg {
+	width: 10px !important;
+	height: 10px !important;
+	color: #C13C37;
+	overflow: hidden;
+	background-color: #C13C37;
+}
+
+ul {
+	list-style: none;
+}
+
+.statistics {
+	display: flex;
+	justify-content: space-between;
+	padding-right: 10%;
+	padding-left: 10%;
+	flex-wrap: wrap;
+}
+
+.goodWords,
+.badWords {
+	flex: 1 1 200px;
+	margin: 10px;
+	background-color: #ecf0f1;
+	border-radius: 20px;
+	overflow: scroll;
+	height: 300px;
+	overflow-x: hidden;
+
 }
