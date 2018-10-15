@@ -72,48 +72,59 @@ class Main extends Component {
     });
     // http://localhost:8080
     axios.post("/specificSearch", { search });
-    const socket = socketIOClient("/api");
-    socket.on("connect", () => {
-      console.log("Socket Connected");
-      socket.on("tweets", data => {
-        let sum = this.state.positivePie + this.state.negativePie;
-        this.setState({ sum: sum });
-
-        if (data.score > 0) {
-          let positiveNum = [data.score].concat(this.state.positive);
-          let positiveWords = [data.positiveWords].concat(this.state.posWords);
-          let percent = (this.state.positivePie * 100) / this.state.sum;
-          this.setState({
-            positive: positiveNum,
-            posPercent: percent,
-            posWords: positiveWords
-          });
-
-          this.setState({
-            positivePie: this.state.positive.reduce(this.getSum)
-          });
-          console.log(this.state.positivePie);
-        } else {
-          let negativeNum = [data.score].concat(this.state.negative);
-          let negativeWords = [data.negativeWords].concat(this.state.negWords);
-          let percent = (this.state.negativePie * 100) / this.state.sum;
-          this.setState({
-            negative: negativeNum,
-            negPercent: percent,
-            negWords: negativeWords
-          });
-          this.setState({
-            negativePie: Math.abs(this.state.negative.reduce(this.getSum))
-          });
-        }
+    const socket = socketIOClient("http://localhost:3050/api");
+    try {
+      socket.on("connect", () => {
+        console.log("Socket Connected");
+        socket.on("tweets", data => {
+          let sum = this.state.positivePie + this.state.negativePie;
+          this.setState({ sum: sum });
+          if (data.score > 0) {
+            let positiveNum = [data.score].concat(this.state.positive);
+            let positiveWords = [data.positiveWords].concat(
+              this.state.posWords
+            );
+            let percent = (this.state.positivePie * 100) / this.state.sum;
+            this.setState({
+              positive: positiveNum,
+              posPercent: percent,
+              posWords: positiveWords
+            });
+            this.setState({
+              positivePie: this.state.positive.reduce(this.getSum)
+            });
+            console.log(this.state.positivePie);
+          } else {
+            let negativeNum = [data.score].concat(this.state.negative);
+            let negativeWords = [data.negativeWords].concat(
+              this.state.negWords
+            );
+            let percent = (this.state.negativePie * 100) / this.state.sum;
+            this.setState({
+              negative: negativeNum,
+              negPercent: percent,
+              negWords: negativeWords
+            });
+            this.setState({
+              negativePie: Math.abs(this.state.negative.reduce(this.getSum))
+            });
+          }
+        });
       });
-    });
 
-    socket.on("disconnect", () => {
-      socket.off("tweets");
-      socket.removeAllListeners("tweets");
-      console.log("Socket Disconnected");
-    });
+      socket.on("disconnect", () => {
+        socket.off("tweets");
+        socket.removeAllListeners("tweets");
+        console.log("Socket Disconnected");
+      });
+
+      socket.on("error", function(err) {
+        console.log("Socket.IO Error");
+        console.log(err); // this is changed from your code in last comment
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {

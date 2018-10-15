@@ -35,6 +35,7 @@ module.exports = (app, io) => {
                         track: app.locals.searchWord
                     },
                     stream => {
+
                         stream.on("data", tweet => {
                             var result = sentiment.analyze(tweet.text);
                             // result.positive and result.negative
@@ -46,8 +47,11 @@ module.exports = (app, io) => {
                                     negativeWords: result.negative
                                 }
 
-                                console.log(sentimentObject)
-                                sendMessage(sentimentObject);
+                                console.log(sentimentObject.score)
+                                setInterval(function () {
+                                    sendMessage(sentimentObject)
+                                }, 2000);
+
                             }
 
                         });
@@ -70,12 +74,17 @@ module.exports = (app, io) => {
      * Sets search word for twitter stream.
      */
     app.post("/specificSearch", async (req, res) => {
-        let term = await req.body.search;
-        console.log(term);
-        app.locals.searchWord = term;
+        try {
+            let term = await req.body.search;
+            console.log(term);
+            app.locals.searchWord = term;
 
-        stream();
-        res.send("s");
+            stream();
+            res.send("s");
+        } catch (e) {
+            console.log(e)
+        }
+
     });
 
     /**
@@ -97,9 +106,11 @@ module.exports = (app, io) => {
     app.get("/streamTweets", MainControl.searchTweets);
 
     //Establishes socket connection.
+
     io.on("connection", socket => {
         socketConnection = socket;
         stream();
+        console.log(socket.nsp.server.nsps)
         socket.on("connection", () => console.log("Client connected"));
         socket.on("disconnect", () => console.log("Client disconnected"));
     });
