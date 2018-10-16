@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![Deploy to now](https://deploy.now.sh/static/button.svg)](https://deploy.now.sh/?repo=https://github.com/zeit/next.js/tree/master/examples/with-socket.io)
 
 # Socket.io example
@@ -38,3 +39,7 @@ yarn dev
 This example show how to use [socket.io](https://socket.io/) inside a Next.js application. It uses `getInitialProps` to fetch the old messages from a HTTP endpoint as if it was a Rest API. The example combine the WebSocket server with the Next server, in a production application you should split them as different services.
 
 **Example:** [https://next-socket-io.now.sh/](https://next-socket-io.now.sh/)
+=======
+1) docker-compose up --build
+2) line 75 in Main.jsx giving aids
+>>>>>>> 45ee462a26127dc3ca77b5c1783181ea4e08f40d
