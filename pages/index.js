@@ -51,14 +51,13 @@ class Cloud extends Component {
 
   handleStop = event => {
     event.preventDefault();
-    console.log("shoud stop");
-
-    axios.post("/api/stop");
+    console.log("shoud stop stream");
+    axios.post("/stop");
   };
 
   handleLiveSearch = event => {
     event.preventDefault();
-    console.log("live");
+    console.log("live stream");
     let search = this.state.search;
     this.setState({
       title: this.state.search,

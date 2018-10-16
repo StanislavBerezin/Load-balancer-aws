@@ -248,13 +248,13 @@ function (_Component) {
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleStop", function (event) {
       event.preventDefault();
-      console.log("shoud stop");
-      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post("/api/stop");
+      console.log("shoud stop stream");
+      axios__WEBPACK_IMPORTED_MODULE_3___default.a.post("/stop");
     });
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handleLiveSearch", function (event) {
       event.preventDefault();
-      console.log("live");
+      console.log("live stream");
       var search = _this.state.search;
 
       _this.setState({
