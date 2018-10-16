@@ -1,0 +1,25 @@
+{
+  "name": "with-socket.io",
+  "version": "1.0.0",
+  "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "isomorphic-unfetch": "^2.0.0",
+    "next": "7.0.2",
+    "nodemon": "^1.18.4",
+    "react": "16.5.2",
+    "react-dom": "16.5.2",
+    "react-minimal-pie-chart": "^3.3.0",
+    "sentiment": "^5.0.1",
+    "socket.io": "^1.7.3",
+    "socket.io-client": "^1.7.3",
+    "twitter": "^1.7.1"
+  },
+  "scripts": {
+    "dev": "nodemon server/server.js --exec \"npm run test && node\"",
+    "build": "next build",
+    "start": "NODE_ENV=production node server/server.js"
+  }
+}

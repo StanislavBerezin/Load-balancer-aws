@@ -1,15 +1,22 @@
-import React, { Component } from "react";
-import classess from "./Main.css";
-import Intro from "../Components/Layout/Intro";
-import axios from "../Axios";
-import Aux from "../Aux/Aux";
-import { ClipLoader } from "react-spinners";
+import { Component } from "react";
+
+import fetch from "isomorphic-unfetch";
 import socketIOClient from "socket.io-client";
+import "./Main.css";
+import axios from "axios";
 
 import PieChart from "react-minimal-pie-chart";
 
-class Main extends Component {
+class Cloud extends Component {
+  // init state with the prefetched messages
   state = {
+    field: "",
+    newMessage: 0,
+    messages: this.props.messages,
+    subscribe: false,
+    subscribed: false,
+
+    test: this.props.socket,
     search: "",
     title: "",
     loading: false,
@@ -25,8 +32,11 @@ class Main extends Component {
     posWords: []
   };
 
+  // FROM ME
+
   handleChange = event => {
     this.setState({ search: event.target.value });
+    console.log(this.state.test);
   };
 
   handleStaticSearch = event => {
@@ -42,6 +52,7 @@ class Main extends Component {
         console.log(e);
       });
   };
+
   getSum(total, num) {
     return total + num;
   }
@@ -52,8 +63,6 @@ class Main extends Component {
 
     axios.post("/stop");
   };
-
-  handleSpecific() {}
 
   handleLiveSearch = event => {
     event.preventDefault();
@@ -70,9 +79,11 @@ class Main extends Component {
       negWords: [],
       posWords: []
     });
-    // http://localhost:8080
+
     axios.post("/specificSearch", { search });
-    const socket = socketIOClient("http://localhost:3050/api");
+    console.log(search);
+    const socket = socketIOClient();
+
     try {
       socket.on("connect", () => {
         console.log("Socket Connected");
@@ -111,13 +122,11 @@ class Main extends Component {
           }
         });
       });
-
       socket.on("disconnect", () => {
         socket.off("tweets");
         socket.removeAllListeners("tweets");
         console.log("Socket Disconnected");
       });
-
       socket.on("error", function(err) {
         console.log("Socket.IO Error");
         console.log(err); // this is changed from your code in last comment
@@ -127,29 +136,31 @@ class Main extends Component {
     }
   };
 
+  // FROM ME FINISHED
+
   render() {
     let posWords = null;
-    posWords = this.state.posWords.map(e => {
-      return <li>{e}</li>;
+    posWords = this.state.posWords.map((e, index) => {
+      return <li key={index}>{e}</li>;
     });
     let negWords = null;
-    negWords = this.state.negWords.map(e => {
-      return <li>{e}</li>;
+    negWords = this.state.negWords.map((e, index) => {
+      return <li key={index}>{e}</li>;
     });
 
     return (
       <div>
         {/* intro screen */}
-        <Intro />
-        <div className={classess.Main}>
+        {/* <Intro /> */}
+        <div className="Main">
           <h1>View statistics</h1>
-          <div className={classess.Bar}>
+          <div className="Bar">
             {/* managing the form on submission */}
-            <form onSubmit={this.handleLiveSearch} className={classess.form}>
+            <form onSubmit={this.handleLiveSearch} className="form">
               <label>
                 <input type="search" name="name" onChange={this.handleChange} />
               </label>
-              <div className={classess.searchButtons}>
+              <div className="searchButtons">
                 <input type="submit" name="live" value="Live stream" />
                 <input
                   type="submit"
@@ -170,17 +181,17 @@ class Main extends Component {
           <h1>Statistics for {this.state.title}</h1>
           <p>
             Positive {this.state.posPercent.toString().substr(0, 4)} %{" "}
-            <span className={classess.pos}> __</span>
+            <span className="pos"> __</span>
           </p>
           <p>
             Negative {this.state.negPercent.toString().substr(0, 4)} %{" "}
-            <span className={classess.neg}> __</span>
+            <span className="neg"> __</span>
           </p>
 
-          <div className={classess.statistics}>
+          <div className="statistics">
             <div>
               <PieChart
-                className={classess.chart}
+                className="chart"
                 data={[
                   {
                     title: "Test",
@@ -196,25 +207,14 @@ class Main extends Component {
               />
             </div>
 
-            <div className={classess.goodWords}>
+            <div className="goodWords">
               <h4>Positive words</h4>
               <ul>{posWords}</ul>
             </div>
-            <div className={classess.badWords}>
+            <div className="badWords">
               <h4>Negative words</h4>
               <ul>{negWords}</ul>
             </div>
-          </div>
-
-          <div className="sweet-loading">
-            {/* loading circle */}
-            <ClipLoader
-              className={classess.Fix}
-              sizeUnit={"px"}
-              size={150}
-              color={"#123abc"}
-              loading={this.state.loading}
-            />
           </div>
         </div>
       </div>
@@ -222,4 +222,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default Cloud;

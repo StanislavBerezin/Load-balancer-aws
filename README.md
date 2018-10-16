@@ -1,56 +1,40 @@
-# (1) Start production
-On your local machine
-TO build
-- 1.1) ```docker login``` enter your credentials
-- 1.2) ```docker build -t (yourDocHubName)/client .```
-- 1.3)```docker build -t (yourDocHubName)/nginx .```
-- 1.4)```docker build -t (yourDocHubName)/server .```
+[![Deploy to now](https://deploy.now.sh/static/button.svg)](https://deploy.now.sh/?repo=https://github.com/zeit/next.js/tree/master/examples/with-socket.io)
 
-To push
-- 1.5) ```docker push (yourDocHubName)/client```
-- 1.6) ```docker push (yourDocHubName)/nginx```
-- 1.7) ```docker push (yourDocHubName)/server```
-All of these will push images to docker hub on your profile
+# Socket.io example
 
-# (2) Create EC2 instance on Amazon
-- 2.1) Get inside of the instance
-- 2.2) ```sudo curl -fsSL https://get.docker.com/ | sh ``` to install docker
-- 2.3) ```sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose``` to install docker compose
-- 2.4)```sudo chmod +x /usr/local/bin/docker-compose``` give access
-- 2.5) Create ```docker-compose.yml``` with the following code:
-```
-version: '3'
-services:
-  nginx:
-    restart: always
-    image: 'coconicola/nginx'
-    ports:
-      - '2000:80'
-  api:
-    image: 'coconicola/server'
-  client:
-    image: 'coconicola/client'
+## How to use
 
+### Using `create-next-app`
+
+Execute [`create-next-app`](https://github.com/segmentio/create-next-app) with [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) or [npx](https://github.com/zkat/npx#readme) to bootstrap the example:
+
+```bash
+npx create-next-app --example with-socket.io with-socket.io-app
+# or
+yarn create next-app --example with-socket.io with-socket.io-app
 ```
 
-replace coconicola with your username
+### Download manually
 
-- 2.6) ```sudo docker-compose up --build ``` will start the server
+Download the example:
 
-
-# Possible issues
-
-1) Might not load if you setup the port incorrectly in step 2.5 under nginx, the reason its port ```2000``` its because it was setup during ES2 instance creation, so change accordingly
-2) You might need to do ```docker login``` to push and retrieve images
-3) Install docker and docker compose
+```bash
+curl https://codeload.github.com/zeit/next.js/tar.gz/canary | tar -xz --strip=2 next.js-canary/examples/with-socket.io
+cd with-socket.io
 ```
-sudo curl -fsSL https://get.docker.com/ | sh
 
-sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+Install it and run:
 
-sudo chmod +x /usr/local/bin/docker-compose
+```bash
+npm install
+npm run dev
+# or
+yarn
+yarn dev
 ```
-after dont forget to login ```docker login```
 
-4) If need to transfer scripts from local PC to EC2 instance
-```scp -i [secretfile.pem] [whatToTranfsfer] [connections]us-west-2.compute.amazonaws.com:~[path]```
+## The idea behind the example
+
+This example show how to use [socket.io](https://socket.io/) inside a Next.js application. It uses `getInitialProps` to fetch the old messages from a HTTP endpoint as if it was a Rest API. The example combine the WebSocket server with the Next server, in a production application you should split them as different services.
+
+**Example:** [https://next-socket-io.now.sh/](https://next-socket-io.now.sh/)
