@@ -3,21 +3,18 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const next = require('next')
 const bodyParser = require('body-parser');
+var Twitter = require("twitter");
+var Sentiment = require("sentiment");
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({
     dev
 })
 const nextHandler = nextApp.getRequestHandler()
-var Twitter = require("twitter");
 
-var Sentiment = require("sentiment");
-// fake DB
-const messages = {
-    chat1: [],
-    chat2: []
+const routes = {
+    api: require('./routes/api')
 }
-
 
 // socket.io server
 
@@ -102,10 +99,8 @@ io.on("connection", socket => {
 nextApp.prepare().then(() => {
     app.use(bodyParser.json())
 
-    app.get('/messages/:chat', (req, res) => {
-        res.json(messages[req.params.chat])
-    })
 
+    app.use('/api', routes.api)
     app.get('*', (req, res) => {
         return nextHandler(req, res)
     })

@@ -1,3 +1,36 @@
+.Nav {
+    display: flex;
+    background: linear-gradient(to right, #3c1053, #ad5389);
+    color: #fff;
+    padding: 20px;
+}
+
+.Nav a {
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 1s;
+    background-color: #6C5B7B;
+    color: #fff;
+}
+
+.Nav a:hover {
+    background-color: #C06C84;
+}
+.Foot {
+    background: #ad5389;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #3c1053, #ad5389);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #3c1053, #ad5389);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding: 50px;
+    color: #fff;
+}
 body {
     margin: 0;
     padding: 0;
@@ -119,3 +152,33 @@ ul {
     overflow-x: hidden;
 
 }
+.image {
+  background: #ad5389;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #3c1053, #ad5389);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #3c1053, #ad5389);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  /* Chrome 10-25, Safari 5.1-6 */
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-size: cover;
+  background-position: center;
+  height: 70vh;
+  min-height: 300px;
+  background-attachment: fixed;
+
+}
+
+.text {
+  display: flex;
+  text-align: center;
+  color: #fff;
+  transform: translate(0%, 70%);
+  word-spacing: 5px;
+  flex-direction: column;
+  font-weight: 300 !important;
+}
+
+/*# sourceMappingURL=styles.chunk.css.map*/

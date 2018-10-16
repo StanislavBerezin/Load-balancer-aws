@@ -1,22 +1,14 @@
 import { Component } from "react";
 
-import fetch from "isomorphic-unfetch";
 import socketIOClient from "socket.io-client";
 import "./Main.css";
 import axios from "axios";
-
+import Intro from "../components/Intro";
 import PieChart from "react-minimal-pie-chart";
 
 class Cloud extends Component {
   // init state with the prefetched messages
   state = {
-    field: "",
-    newMessage: 0,
-    messages: this.props.messages,
-    subscribe: false,
-    subscribed: false,
-
-    test: this.props.socket,
     search: "",
     title: "",
     loading: false,
@@ -61,7 +53,7 @@ class Cloud extends Component {
     event.preventDefault();
     console.log("shoud stop");
 
-    axios.post("/stop");
+    axios.post("/api/stop");
   };
 
   handleLiveSearch = event => {
@@ -151,7 +143,7 @@ class Cloud extends Component {
     return (
       <div>
         {/* intro screen */}
-        {/* <Intro /> */}
+        <Intro />
         <div className="Main">
           <h1>View statistics</h1>
           <div className="Bar">

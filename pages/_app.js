@@ -1,7 +1,8 @@
 import App, { Container } from "next/app";
 import React from "react";
 import io from "socket.io-client";
-
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
     let pageProps = {};
@@ -16,9 +17,13 @@ class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Container>
-        <Component {...pageProps} />
-      </Container>
+      <div className="all">
+        <Container>
+          <Navigation />
+          <Component {...pageProps} />
+          <Footer />
+        </Container>
+      </div>
     );
   }
 }
