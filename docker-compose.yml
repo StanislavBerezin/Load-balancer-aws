@@ -1,14 +1,42 @@
 version: "3"
 services:
-  webapp:
-    image: coconicola/webapp
+  nginx:
+    restart: always
+    image: coconicola/nginx
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      # nginux on 80, but map it to 3050
+      - "3050:80"
+    depends_on:
+      - api
+      - client
+      - socket
+  # api is the server, dont call it server because of the configurations in nginx
+  api:
+    image: coconicola/server
     # so need to build that container
     build:
       # use the dockerfile with our info there
       dockerfile: Dockerfile
-      # indiciate the locations, considering compose file is in root
-      # then needs to go to server folder to find dockerfile there
-      context: ./
 
-    ports:
-      - "3000:3000"
+      context: ./server
+  socket:
+    image: coconicola/socket
+    # so need to build that container
+    build:
+      # use the dockerfile with our info there
+      dockerfile: Dockerfile
+
+      context: ./socket
+
+  client:
+    image: coconicola/client
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    volumes:
+      - /app/node_modules
+      # everything from client should be applied in app folder
+      - ./client:/app

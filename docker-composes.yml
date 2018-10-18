@@ -1,0 +1,17 @@
+version: "3"
+services:
+  nginx:
+    restart: always
+    image: "coconicola/nginx"
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+      - client
+      - socket
+  api:
+    image: "coconicola/server"
+  client:
+    image: "coconicola/client"
+  socket:
+    image: "coconicola/socket"

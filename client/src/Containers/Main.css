@@ -1,0 +1,128 @@
+.Main {
+	min-height: 100vh;
+	max-width: 1024px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+input[type=submit] {
+	height: 50px;
+	cursor: pointer;
+	background: #ccc;
+	padding: 10px;
+	border: 2px solid #ccc;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	background-color: #6C5B7B;
+
+	color: #fff;
+	font-size: 15px;
+	transition: 1s ease-in-out;
+	outline: none;
+
+	margin-top: 10px;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+input[type=submit]:hover {
+	background-color: #C06C84;
+
+}
+
+input[type=search] {
+	padding: 5px;
+	border: 2px solid #ccc;
+	-webkit-border-radius: 15px;
+	border-radius: 15px;
+	outline: none;
+	height: 50px;
+	width: 100%;
+	transition: 1s ease-in-out;
+	margin-right: 20px;
+}
+
+input[type=search]:focus {
+	border-color: #6C5B7B;
+}
+
+.form {
+	width: 400px;
+}
+
+.Bar {
+	display: flex;
+	justify-content: center;
+}
+
+.searchButtons {
+	display: flex;
+	justify-content: space-around;
+}
+
+.Cards {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	flex-direction: row;
+	margin: 0 auto;
+}
+
+.chart {
+	width: 300px;
+	height: 300px;
+}
+
+.pos {
+	width: 10px !important;
+	height: 10px !important;
+	color: #C06C84;
+	background-color: #C06C84;
+	overflow: hidden;
+}
+
+.neg {
+	width: 10px !important;
+	height: 10px !important;
+	color: #6C5B7B;
+	overflow: hidden;
+	background-color: #6C5B7B;
+}
+
+ul {
+	list-style: none;
+}
+
+.statistics {
+	display: flex;
+	justify-content: space-between;
+	padding-right: 10%;
+	padding-left: 10%;
+	flex-wrap: wrap;
+}
+
+.goodWords,
+.badWords {
+	flex: 1 1 200px;
+	margin: 10px;
+	background-color: #ecf0f1;
+	border-radius: 20px;
+	overflow: scroll;
+	height: 300px;
+	overflow-x: hidden;
+
+}
+
+.Save {
+	background-color: #2ecc71 !important;
+	transition: 1s;
+}
+
+.Save:hover {
+	background-color: #32ff7e !important;
+}
+
+.errMessage {
+	border: 1px solid red;
+	padding: 20px;
+}

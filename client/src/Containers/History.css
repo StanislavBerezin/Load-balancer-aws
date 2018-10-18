@@ -1,0 +1,98 @@
+.Cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: row;
+    margin: 0 auto;
+}
+
+.Fix {
+    margin-top: 20px;
+}
+
+.chart {
+    width: 300px;
+    height: 300px;
+}
+
+.pos {
+    width: 10px !important;
+    height: 10px !important;
+    color: #C06C84;
+    background-color: #C06C84;
+    overflow: hidden;
+}
+
+.neg {
+    width: 10px !important;
+    height: 10px !important;
+    color: #6C5B7B;
+    overflow: hidden;
+    background-color: #6C5B7B;
+}
+
+
+ul {
+    list-style: none;
+}
+
+ul li {
+    text-align: center;
+}
+
+.statistics {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10%;
+    padding-left: 10%;
+    flex-wrap: wrap;
+}
+
+.goodWords,
+.badWords {
+    flex: 1 1 200px;
+    margin: 10px;
+    background-color: #ecf0f1;
+    border-radius: 20px;
+    overflow: scroll;
+    height: 300px;
+    overflow-x: hidden;
+
+}
+
+.item {
+    flex: 1 1 200px;
+    display: flex;
+    height: 100vh;
+
+    justify-content: center;
+    align-items: center;
+
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.center p {
+
+    justify-content: center;
+    align-self: center;
+    margin: 20px;
+}
+
+.center span {
+    text-align: center;
+}
+
+h4 {
+    text-align: center;
+}
+
+h1 {
+    margin-left: 20px;
+
+}

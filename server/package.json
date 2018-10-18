@@ -1,0 +1,32 @@
+{
+  "name": "cab432",
+  "version": "1.0.0",
+  "description": "CAB432",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=production node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aylien_textapi": "^0.7.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "helmet": "^3.13.0",
+    "joi": "^13.6.0",
+    "join": "^3.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.3.4",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.4",
+    "react-minimal-pie-chart": "^3.3.0",
+    "sentiment": "^5.0.1",
+    "socket.io": "^2.1.1",
+    "twit": "^2.2.11",
+    "twitter": "^1.7.1"
+  }
+}
