@@ -11,7 +11,7 @@ app.use(cors())
 let server = app.listen(port, function (err) {
     if (err) throw err;
     console.log("Socket available at " + port);
-});
+})
 
 const io = require('socket.io').listen(server)
 
