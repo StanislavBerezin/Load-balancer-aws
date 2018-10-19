@@ -69,7 +69,7 @@ module.exports = (app, io) => {
                         });
 
                         stream.on("error", error => {
-
+                            console.log(error)
                         });
                         twitterStream = stream;
                     }

@@ -6,7 +6,7 @@ import stream from "../Axios/Stream";
 import PieChart from "react-minimal-pie-chart";
 import { ClipLoader } from "react-spinners";
 import socketIOClient from "socket.io-client";
-import Auxx from "../Aux/Aux";
+import Auxx from "../Auxx/Auxx";
 import { css } from "react-emotion";
 const override = css`
   margin: 30px;
@@ -58,9 +58,11 @@ class Main extends Component {
       this.setState({ errMes: "", loading: true, error: true, saved: false });
 
       const socket = socketIOClient({ path: "/socket.io" });
-      // axios.post("http://localhost:3050/socket/initialiseStream", { search });
-
       stream.post("/initialiseStream", { search });
+
+      // const socket = socketIOClient("http://localhost:8888");
+      // stream.post("/initialiseStream", { search });
+
       let negative = [];
       let positive = [];
       try {
