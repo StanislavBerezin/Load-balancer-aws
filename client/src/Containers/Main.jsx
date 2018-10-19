@@ -57,11 +57,11 @@ class Main extends Component {
     } else {
       this.setState({ errMes: "", loading: true, error: true, saved: false });
 
-      const socket = socketIOClient({ path: "/socket.io" });
-      stream.post("/initialiseStream", { search });
-
-      // const socket = socketIOClient("http://localhost:8888");
+      // const socket = socketIOClient({ path: "/socket.io" });
       // stream.post("/initialiseStream", { search });
+
+      const socket = socketIOClient("http://localhost:8888");
+      stream.post("/initialiseStream", { search });
 
       let negative = [];
       let positive = [];
