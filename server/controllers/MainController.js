@@ -21,6 +21,21 @@ twitter.get = util.promisify(twitter.get);
 
 
 module.exports = {
+
+    // TEST ENVIRONMENT FOR YOU
+    async overload(req, res) {
+        let fromClient = req.body.search;
+        console.log(fromClient);
+        res.send(fromClient)
+
+    },
+
+    // TEST ENVIRIONMENT FINISHED
+
+
+
+    // You can explore other things here if interested
+
     async saveResults(req, res) {
         try {
 

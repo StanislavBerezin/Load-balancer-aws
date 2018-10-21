@@ -61,6 +61,7 @@ module.exports = (app, io) => {
                                     posPercent,
                                     negPercent
                                 }
+                                console.log(tweet.text)
                                 sendMessage(sentimentObject)
 
                                 negWords = []

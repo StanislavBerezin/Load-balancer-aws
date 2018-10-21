@@ -138,7 +138,6 @@ class Main extends Component {
     });
   };
   saveResults = event => {
-    event.preventDefault();
     if (this.state.search === "") {
       this.setState({ errMes: "Start the search first" });
     } else {
@@ -163,6 +162,13 @@ class Main extends Component {
         });
     }
   };
+  vaib = event => {
+    event.preventDefault();
+    let search = this.state.search;
+    axios.post("/overload", { search }).then(data => {
+      console.log(data);
+    });
+  };
 
   handleStaticSearch = event => {
     event.preventDefault();
@@ -174,25 +180,27 @@ class Main extends Component {
       this.setState({ errMes: "Enter the details to begin the search" });
     } else {
       this.setState({ errMes: "", loading: true, error: true, saved: false });
-      axios
-        .post("/specificSearch", { search })
-        .then(response => {
-          this.mapThrough(response.data.negWords, negative);
-          this.mapThrough(response.data.posWords, positive);
-          positive = [...new Set(positive)];
-          negative = [...new Set(negative)];
-          this.setState({
-            negWords: negative,
-            posWords: positive,
-            positivePie: response.data.positivePie,
-            negativePie: response.data.negativePie,
-            posPercent: response.data.posPercent,
-            negPercent: response.data.negPercent
+      for (let i = 0; i < 5; i++) {
+        axios
+          .post("/specificSearch", { search })
+          .then(response => {
+            this.mapThrough(response.data.negWords, negative);
+            this.mapThrough(response.data.posWords, positive);
+            positive = [...new Set(positive)];
+            negative = [...new Set(negative)];
+            this.setState({
+              negWords: negative,
+              posWords: positive,
+              positivePie: response.data.positivePie,
+              negativePie: response.data.negativePie,
+              posPercent: response.data.posPercent,
+              negPercent: response.data.negPercent
+            });
+          })
+          .then(() => {
+            this.setState({ error: false, loading: false });
           });
-        })
-        .then(() => {
-          this.setState({ error: false, loading: false });
-        });
+      }
     }
   };
 
@@ -291,6 +299,13 @@ class Main extends Component {
                   onClick={this.saveResults}
                   name="static"
                   value="Save results"
+                />
+                <input
+                  type="submit"
+                  className={classess.Save}
+                  onClick={this.vaib}
+                  name="static"
+                  value="Vaibhav test"
                 />
               </div>
             </form>
