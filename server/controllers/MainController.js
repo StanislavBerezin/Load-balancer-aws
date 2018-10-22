@@ -8,10 +8,9 @@ const twitter = new Twitter({
 const util = require('util');
 const Sentiment = require("sentiment");
 const sentiment = new Sentiment();
-
-
-
-
+var Flickr = require("node-flickr");
+var keys = {"api_key": "a5bc0ff84bf86a9d7b8e9313b4fa3388"}
+flickr = new Flickr(keys);
 
 const statModel = require('../models/stat')
 const mongoose = require('mongoose')
@@ -19,14 +18,42 @@ const mongoose = require('mongoose')
 
 twitter.get = util.promisify(twitter.get);
 
-
 module.exports = {
 
     // TEST ENVIRONMENT FOR YOU
+   // comments = [],
     async overload(req, res) {
         let fromClient = req.body.search;
         console.log(fromClient);
-        res.send(fromClient)
+       // res.send(fromClient)
+
+       flickr.get("photos.search", {"text": fromClient, "per+page": 500, }, function(err, result){
+        if (err) return console.error(err);
+        var x = result.photos.photo.length;
+        for (let i=0;i<x;i++) // for each photo
+       
+        {
+            var p_id = result.photos.photo[i].id;
+            flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2){
+                if(err) return console.error(err);
+                if(result2.comments.comment != null) // check if it has comments
+                {
+                    for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
+                    {
+                        let currentComment = (result2.comments.comment[numberofComments]._content);
+                        console.log(currentComment);
+                        var output = sentiment.analyze(currentComment);
+                        console.log(output);
+                                          
+                    }
+                    
+                }
+
+            })
+        }
+      
+
+});
 
     },
 
