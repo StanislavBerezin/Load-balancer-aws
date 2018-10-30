@@ -31,6 +31,7 @@ module.exports = (app, io) => {
         let negWords = []
         let posWords = []
         let reducer = (accumulator, currentValue) => accumulator + currentValue;
+
         try {
             if (app.locals.searchWord === "none") {
                 console.log("nothing to search for");
@@ -39,6 +40,7 @@ module.exports = (app, io) => {
                 twitter.stream("statuses/filter", {
                         track: app.locals.searchWord
                     },
+
                     stream => {
                         stream.on("data", tweet => {
                             var result = sentiment.analyze(tweet.text);
@@ -46,7 +48,12 @@ module.exports = (app, io) => {
                                 //  [...new Set(negative)];
                                 if (result.score > 0) {
                                     positive = [result.score].concat(positive);
+                                    
+
                                     posWords.push([result.positive[0]]);
+
+                                   
+                        
                                 } else {
                                     negative = [result.score].concat(negative);
                                     negWords.push([result.negative[0]]);
@@ -67,50 +74,55 @@ module.exports = (app, io) => {
                                 }
                                 let word;
                                 
-                            //     if((posWords[0]!=undefined))
-                            //     {
-                            //         console.log(posWords[0][0])
-                            //         word =posWords[0][0];
-                            //      characterArray = word.split("");
+                                if((posWords[0]!=undefined))
+                                {
+                                    console.log(posWords[0][0])
+                                    word =posWords[0][0];
+                                // characterArray = word.split("");
                                 
-                            //     //for(let n=0;n<characterArray.length;n++)//for each letter of the query word, get photos with that letter in it's description, title or tags and perform analysis on all the comments from all the photos
-                            //     {
-                            //             //let letter = characterArray[n];
-                            //             letter=word;
-                            //             console.log("Analysis result of " + letter);
-                            //             flickr.get("photos.search", {"text": letter, "per+page": 500, }, function(err, result)
-                            //             {
-                            //                 if (err) return console.error(err);
-                            //                 var x = result.photos.photo.length;
-                            //                 for (let i=0;i<x;i++) // for each photo
-                                    
-                            //                     {
-                            //                         var p_id = result.photos.photo[i].id;
-                            //                         flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2)
-                            //                         {
-                            //                             if(err) return console.error(err);
-                            //                             if(result2.comments.comment != null) // check if it has comments
-                            //                             {
-                            //                                 for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
-                            //                                 {
-                            //                                     let currentComment = (result2.comments.comment[numberofComments]._content);
-                            //                                     console.log(currentComment);
-                            //                                     var output = sentiment.analyze(currentComment);
-                            //                                     console.log(output);
-                                                                                
-                            //                                 }
-                                                            
-                            //                             }
+                                //for(let n=0;n<characterArray.length;n++)//for each letter of the query word, get photos with that letter in it's description, title or tags and perform analysis on all the comments from all the photos
+                                {
+                                        //let letter = characterArray[n];
+                                        letter=word;
+                                        console.log("Analysis result of " + letter);
+                                        flickr.get("photos.search", {"text": letter, "per+page": 500, }, function(err, result)
+                                        {
+                                           if (err) return console.error(err);
+                                            var x = result.photos.photo.length;
+                                            console.log(x);
 
-                            //                         })
-                            //                     }
+                                            /*
+                                            for (let i=0;i<x;i++) // for each photo
+                                            */
+                                            if(result.photos.photo[0] != undefined)
+                                                {
+                                                    var p_id = result.photos.photo[0].id;
+                                                    flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2)
+                                                    {
+                                                        if(err) return console.error(err);
+                                                        if(result2.comments.comment != null) // check if it has comments
+                                                        {
+                                                            for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
+                                                            {
+                                                                let currentComment = (result2.comments.comment[numberofComments]._content);
+                                                                console.log(currentComment);
+                                                                var output = sentiment.analyze(currentComment);
+                                                                console.log(output);
+                                                                                
+                                                            }
+                                                            
+                                                        }
+
+                                                    })
+                                                }
+                                                
                             
 
-                            //             });
+                                        });
 
-                            //     }
+                                }
 
-                            // }
+                            }
                             sendMessage(sentimentObject)
 
                                 negWords = []
