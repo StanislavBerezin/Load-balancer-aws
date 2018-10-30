@@ -1,159 +1,194 @@
 var Twitter = require("twitter");
 var Sentiment = require("sentiment");
 var twitter = new Twitter({
-  consumer_key: "C2tUjaWK9qOOU6BFWIMd52v45",
-  consumer_secret: "FIAjgruq3Kx09Iwwh0NiQYPp7wLyzG4wFzfSHiRowLBjy8S4md",
-  access_token_key: "843837609797287938-qcJFHUWUJY74tJ2Hdn6Jm4obRII7IlI",
-  access_token_secret: "eSdfw7DUEa0zMTpBBYmHcVjSrkwr8TGcETRP4hYLO795m"
+    consumer_key: "C2tUjaWK9qOOU6BFWIMd52v45",
+    consumer_secret: "FIAjgruq3Kx09Iwwh0NiQYPp7wLyzG4wFzfSHiRowLBjy8S4md",
+    access_token_key: "843837609797287938-qcJFHUWUJY74tJ2Hdn6Jm4obRII7IlI",
+    access_token_secret: "eSdfw7DUEa0zMTpBBYmHcVjSrkwr8TGcETRP4hYLO795m"
 });
 var sentiment = new Sentiment();
 
+var Flickr = require("node-flickr");
+var keys = {"api_key": "a5bc0ff84bf86a9d7b8e9313b4fa3388"}
+flickr = new Flickr(keys);
+
 module.exports = (app, io) => {
-  let socketConnection;
-  let twitterStream;
 
-  app.locals.searchWord = "none"; //Default search term for twitter stream.
-  app.locals.showRetweets = false; //Default
+    let socketConnection;
+    let twitterStream;
 
-  const stream = () => {
-    let update = false;
-    let positiveSTORAGE = [];
-    let negativeSTORAGE = [];
-    let negativePieSTORAGE = [];
-    let positivePieSTORAGE = [];
-    let sumSTORAGE;
-    let negPercentSTORAGE;
-    let posPercentSTORAGE;
+    app.locals.searchWord = "none"; //Default search term for twitter stream.
+    app.locals.showRetweets = false; //Default
 
-    let positive = [];
-    let negative = [];
-    let negativePie;
-    let positivePie;
-    let sum;
-    let negPercent;
-    let posPercent;
-    let negWords = [];
-    let posWords = [];
-    let reducer = (accumulator, currentValue) => accumulator + currentValue;
-    try {
-      if (app.locals.searchWord === "none") {
-        console.log("nothing to search for");
-      } else {
-        console.log("Getting tweets for " + app.locals.searchWord);
-        twitter.stream(
-          "statuses/filter",
-          {
-            track: app.locals.searchWord
-          },
-          stream => {
-            stream.on("data", tweet => {
-              var result = sentiment.analyze(tweet.text);
-              if (result.score != 0) {
-                //  [...new Set(negative)];
-                if (result.score > 0) {
-                  positive = [result.score].concat(positive);
-                  posWords.push([result.positive[0]]);
-                } else {
-                  negative = [result.score].concat(negative);
-                  negWords.push([result.negative[0]]);
-                }
-                positivePie = positive.reduce(reducer);
-                negativePie = Math.abs(negative.reduce(reducer));
-                sum = positivePie + negativePie;
-                posPercent = (positivePie * 100) / sum;
-                negPercent = (negativePie * 100) / sum;
+    const stream = () => {
+        let positive = []
+        let negative = []
+        let negativePie
+        let positivePie
+        let sum
+        let negPercent
+        let posPercent
+        let negWords = []
+        let posWords = []
+        let reducer = (accumulator, currentValue) => accumulator + currentValue;
+        try {
+            if (app.locals.searchWord === "none") {
+                console.log("nothing to search for");
+            } else {
+                console.log("Getting tweets for " + app.locals.searchWord);
+                twitter.stream("statuses/filter", {
+                        track: app.locals.searchWord
+                    },
+                    stream => {
+                        stream.on("data", tweet => {
+                            var result = sentiment.analyze(tweet.text);
+                            if (result.score != 0) {
+                                //  [...new Set(negative)];
+                                if (result.score > 0) {
+                                    positive = [result.score].concat(positive);
+                                    posWords.push([result.positive[0]]);
+                                } else {
+                                    negative = [result.score].concat(negative);
+                                    negWords.push([result.negative[0]]);
+                                }
+                                positivePie = positive.reduce(reducer)
+                                negativePie = Math.abs(negative.reduce(reducer))
+                                sum = positivePie + negativePie;
+                                posPercent = (positivePie * 100) / sum;
+                                negPercent = (negativePie * 100) / sum;
 
-                let sentimentObject = {
-                  negWords,
-                  posWords,
-                  positivePie,
-                  negativePie,
-                  posPercent,
-                  negPercent
-                };
-                console.log(tweet.text);
-                setInterval(() => {
-                  update = true;
-                }, 60000);
+                                let sentimentObject = {
+                                    negWords,
+                                    posWords,
+                                    positivePie,
+                                    negativePie,
+                                    posPercent,
+                                    negPercent
+                                }
+                                let word;
+                                
+                            //     if((posWords[0]!=undefined))
+                            //     {
+                            //         console.log(posWords[0][0])
+                            //         word =posWords[0][0];
+                            //      characterArray = word.split("");
+                                
+                            //     //for(let n=0;n<characterArray.length;n++)//for each letter of the query word, get photos with that letter in it's description, title or tags and perform analysis on all the comments from all the photos
+                            //     {
+                            //             //let letter = characterArray[n];
+                            //             letter=word;
+                            //             console.log("Analysis result of " + letter);
+                            //             flickr.get("photos.search", {"text": letter, "per+page": 500, }, function(err, result)
+                            //             {
+                            //                 if (err) return console.error(err);
+                            //                 var x = result.photos.photo.length;
+                            //                 for (let i=0;i<x;i++) // for each photo
+                                    
+                            //                     {
+                            //                         var p_id = result.photos.photo[i].id;
+                            //                         flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2)
+                            //                         {
+                            //                             if(err) return console.error(err);
+                            //                             if(result2.comments.comment != null) // check if it has comments
+                            //                             {
+                            //                                 for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
+                            //                                 {
+                            //                                     let currentComment = (result2.comments.comment[numberofComments]._content);
+                            //                                     console.log(currentComment);
+                            //                                     var output = sentiment.analyze(currentComment);
+                            //                                     console.log(output);
+                                                                                
+                            //                                 }
+                                                            
+                            //                             }
 
-                if (update) {
-                  negativePieSTORAGE = negativePie;
-                  positivePieSTORAGE = positivePie;
+                            //                         })
+                            //                     }
+                            
 
-                  negPercentSTORAGE = negPercent;
-                  posPercentSTORAGE = posPercent;
-                }
+                            //             });
 
-                update = false;
-                sendMessage(sentimentObject);
+                            //     }
 
-                negWords = [];
-                posWords = [];
-              }
-            });
+                            // }
+                            sendMessage(sentimentObject)
 
-            stream.on("error", error => {
-              console.log(error);
-            });
-            twitterStream = stream;
-          }
-        );
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+                                negWords = []
+                                posWords = []
+                            }
+                        });
 
-  app.post("/initialiseStream", async (req, res) => {
-    try {
-      let term = await req.body.search;
-      console.log(term);
-      app.locals.searchWord = term;
+                        stream.on("error", error => {
+                            console.log(error)
+                        });
+                        twitterStream = stream;
+                    }
+                );
+            }
+        } catch (e) {
+            console.log(e)
+        }
 
-      stream();
-      res.send("Started");
-    } catch (e) {
-      console.log(e);
-    }
-  });
 
-  /**
-   * Pauses the twitter stream.
-   */
-  app.post("/stopStream", (req, res) => {
-    console.log("Stop");
-    try {
-      if (twitterStream) {
-        twitterStream.destroy();
-      } else if (socketConnection) {
-        socketConnection.disconnect();
-      }
-      console.log("Client disconnected");
-      console.log("All sockets are closed");
-      app.locals.searchWord = "none";
-      res.status(200).send("done");
-    } catch (e) {
-      console.log(e);
-    }
-  });
+    };
 
-  io.on("connection", socket => {
-    socketConnection = socket;
-    stream();
-    socket.on("connection", () => console.log("Client connected"));
-    socket.on("disconnect", () => {
-      console.log("Client disconnected");
-      if (twitterStream) {
-        twitterStream.destroy();
-      } else if (socketConnection) {
-        socketConnection.disconnect();
-      }
+    app.post("/initialiseStream", async (req, res) => {
 
-      console.log("All sockets are closed");
+        try {
+            let term = await req.body.search;
+            console.log(term);
+            app.locals.searchWord = term;
+
+            stream();
+            res.send("Started");
+        } catch (e) {
+            console.log(e)
+        }
+
     });
-  });
 
-  const sendMessage = msg => {
-    socketConnection.emit("tweets", msg);
-  };
-};
+    /**
+     * Pauses the twitter stream.
+     */
+    app.post("/stopStream", (req, res) => {
+        console.log("Stop");
+        try {
+            if (twitterStream) {
+                twitterStream.destroy();
+            } else if (socketConnection) {
+                socketConnection.disconnect()
+            }
+            console.log("Client disconnected")
+            console.log("All sockets are closed")
+            app.locals.searchWord = "none";
+            res.status(200).send("done");
+        } catch (e) {
+            console.log(e)
+        }
+
+    });
+
+    io.on("connection", socket => {
+        socketConnection = socket;
+        stream();
+        socket.on("connection", () => console.log("Client connected"));
+        socket.on("disconnect", () => {
+            console.log("Client disconnected")
+            if (twitterStream) {
+                twitterStream.destroy();
+            } else if (socketConnection) {
+                socketConnection.disconnect()
+            }
+
+
+            console.log("All sockets are closed")
+        });
+    });
+
+
+    const sendMessage = msg => {
+        socketConnection.emit("tweets", msg);
+    };
+
+
+}
