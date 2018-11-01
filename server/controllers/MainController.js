@@ -26,36 +26,6 @@ module.exports = {
         let fromClient = req.body.search;
         console.log(fromClient);
        // res.send(fromClient)
-
-/*
-       flickr.get("photos.search", {"text": fromClient, "per+page": 500, }, function(err, result){
-        if (err) return console.error(err);
-        var x = result.photos.photo.length;
-        for (let i=0;i<x;i++) // for each photo
-       
-        {
-            var p_id = result.photos.photo[i].id;
-            flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2){
-                if(err) return console.error(err);
-                if(result2.comments.comment != null) // check if it has comments
-                {
-                    for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
-                    {
-                        let currentComment = (result2.comments.comment[numberofComments]._content);
-                        console.log(currentComment);
-                        var output = sentiment.analyze(currentComment);
-                        console.log(output);
-                                          
-                    }
-                    
-                }
-
-            })
-        }
-      
-
-        });
-*/
         characterArray = fromClient.split("");
         
         for(let n=0;n<characterArray.length;n++)//for each letter of the query word, get photos with that letter in it's description, title or tags and perform analysis on all the comments from all the photos

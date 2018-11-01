@@ -31,6 +31,7 @@ module.exports = (app, io) => {
         let negWords = []
         let posWords = []
         let reducer = (accumulator, currentValue) => accumulator + currentValue;
+        let position=0;
 
         try {
             if (app.locals.searchWord === "none") {
@@ -71,58 +72,68 @@ module.exports = (app, io) => {
                                     negativePie,
                                     posPercent,
                                     negPercent
-                                }
-                                let word;
-                                
-                                if((posWords[0]!=undefined))
-                                {
-                                    console.log(posWords[0][0])
-                                    word =posWords[0][0];
-                                // characterArray = word.split("");
-                                
-                                //for(let n=0;n<characterArray.length;n++)//for each letter of the query word, get photos with that letter in it's description, title or tags and perform analysis on all the comments from all the photos
-                                {
-                                        //let letter = characterArray[n];
-                                        letter=word;
-                                        console.log("Analysis result of " + letter);
-                                        flickr.get("photos.search", {"text": letter, "per+page": 500, }, function(err, result)
-                                        {
-                                           if (err) return console.error(err);
-                                            var x = result.photos.photo.length;
-                                            console.log(x);
+                                } 
 
-                                            /*
-                                            for (let i=0;i<x;i++) // for each photo
-                                            */
-                                            if(result.photos.photo[0] != undefined)
-                                                {
-                                                    var p_id = result.photos.photo[0].id;
-                                                    flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2)
-                                                    {
-                                                        if(err) return console.error(err);
-                                                        if(result2.comments.comment != null) // check if it has comments
-                                                        {
-                                                            for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
-                                                            {
-                                                                let currentComment = (result2.comments.comment[numberofComments]._content);
-                                                                console.log(currentComment);
-                                                                var output = sentiment.analyze(currentComment);
-                                                                console.log(output);
-                                                                                
-                                                            }
-                                                            
-                                                        }
+                                //flickr
 
-                                                    })
-                                                }
-                                                
                             
+                    
+                           console.log("position: "+ position);
+                         
+                           {
+                               if(position%5==0)
+                               {
+                                    console.log("word no. : "+ position);
+                                    let word="";
+                                    if(posWords[0]!=undefined)
+                                    {
+                                        word=posWords[0][0];
+                                    }
+                                   console.log("WORD IS: "+ word);
+                                    flickr.get("photos.search", {"text": word, "per+page": 500, }, function(err, result)
+                                    {
+                                        if (err) return console.error(err);
+                                        var xx = result.photos.photo.length;
+                                        console.log("photos returned: "+ xx);
+                                        for (let i=0;i<xx;i++) // for each photo
+                                
+                                            {
+                                                var p_id = result.photos.photo[i].id;
+                                                flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2){
+                                                    if(err) return console.error(err);
+                                                    //console.log(result2.comments.comment);
+                                                    if(result2.comments.comment != null) // check if it has comments
+                                                    {
+                                                       // console.log("No. of comments: "+result2.comments.comment.length);
+                                                        for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
+                                                        {
+                                                            let currentComment = (result2.comments.comment[numberofComments]._content);
+                                                           // console.log("Comment No: "+ numberofComments + "comment: "+ currentComment);
+                                                            for(let y=0;y<50;y++)
+                                                            {
 
-                                        });
+                                                            var output = sentiment.analyze(currentComment);
+                                                            }
+                                                            //console.log(output);
+                                                                            
+                                                        }
+                                                        
+                                                    }
 
-                                }
+                                                })
+                                            }
+                        
 
-                            }
+                                    });
+                               }
+
+                           }
+
+                
+                           position=position+1;
+
+                                //end flickr                              
+                                
                             sendMessage(sentimentObject)
 
                                 negWords = []
@@ -143,6 +154,9 @@ module.exports = (app, io) => {
 
 
     };
+
+
+
 
     app.post("/initialiseStream", async (req, res) => {
 
