@@ -15,6 +15,7 @@ module.exports = (app) => {
 
     app.post('/viewDB', mainControl.viewResults);
 
+    app.post('/fib', mainControl.fib)
 
 
     //Establishes socket connection.

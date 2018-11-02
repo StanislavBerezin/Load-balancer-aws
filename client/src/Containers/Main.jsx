@@ -164,11 +164,12 @@ class Main extends Component {
   };
   vaib = event => {
     event.preventDefault();
-    let search = this.state.search;
-    axios.post("/overload", { search }).then(data => {
+    
+    axios.post("/fib").then(data => {
       console.log(data);
     });
   };
+
 
   handleStaticSearch = event => {
     event.preventDefault();
@@ -305,7 +306,14 @@ class Main extends Component {
                   className={classess.Save}
                   onClick={this.vaib}
                   name="static"
-                  value="Vaibhav test"
+                  value="Init load"
+                />
+                <input
+                  type="submit"
+                  className={classess.Save}
+                  onClick={this.vaibStop}
+                  name="static"
+                  value="Stop load"
                 />
               </div>
             </form>
