@@ -31,7 +31,6 @@ module.exports = (app, io) => {
         let negWords = []
         let posWords = []
         let reducer = (accumulator, currentValue) => accumulator + currentValue;
-        let position=0;
 
         try {
             if (app.locals.searchWord === "none") {
@@ -76,61 +75,33 @@ module.exports = (app, io) => {
 
                                 //flickr
 
-                            
-                    
-                           console.log("position: "+ position);
-                         
-                           {
-                               if(position%5==0)
-                               {
-                                    console.log("word no. : "+ position);
-                                    let word="";
-                                    if(posWords[0]!=undefined)
+                                if(posWords[0]!= undefined)
+                                {
+                                    let word = posWords[0][0];
+                                    //console.log(posWords[0][0]);
+                                    for(let x=0;x<5000;x++)
                                     {
-                                        word=posWords[0][0];
+                                       var result= sentiment.analyze(word);
+
+                                       console.log(result);
+
+                                       
                                     }
-                                   console.log("WORD IS: "+ word);
-                                    flickr.get("photos.search", {"text": word, "per+page": 500, }, function(err, result)
+                                }
+
+                                if(negWords[0]!= undefined)
+                                {
+                                    let word2 = negWords[0][0];
+                                    //console.log(posWords[0][0]);
+                                    for(let y=0;y<5000;y++)
                                     {
-                                        if (err) return console.error(err);
-                                        var xx = result.photos.photo.length;
-                                        console.log("photos returned: "+ xx);
-                                        for (let i=0;i<xx;i++) // for each photo
-                                
-                                            {
-                                                var p_id = result.photos.photo[i].id;
-                                                flickr.get("photos.comments.getList", {"photo_id": p_id}, function(err, result2){
-                                                    if(err) return console.error(err);
-                                                    //console.log(result2.comments.comment);
-                                                    if(result2.comments.comment != null) // check if it has comments
-                                                    {
-                                                       // console.log("No. of comments: "+result2.comments.comment.length);
-                                                        for(let numberofComments=0; numberofComments < result2.comments.comment.length; numberofComments++)
-                                                        {
-                                                            let currentComment = (result2.comments.comment[numberofComments]._content);
-                                                           // console.log("Comment No: "+ numberofComments + "comment: "+ currentComment);
-                                                            for(let y=0;y<50;y++)
-                                                            {
+                                       var result2= sentiment.analyze(word2);
 
-                                                            var output = sentiment.analyze(currentComment);
-                                                            }
-                                                            //console.log(output);
-                                                                            
-                                                        }
-                                                        
-                                                    }
+                                       console.log(result2);
 
-                                                })
-                                            }
-                        
-
-                                    });
-                               }
-
-                           }
-
-                
-                           position=position+1;
+                                       
+                                    }
+                                }
 
                                 //end flickr                              
                                 
