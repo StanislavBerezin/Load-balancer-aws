@@ -41,7 +41,7 @@ class Main extends Component {
     if (this.state.search === "") {
       this.setState({ errMes: "Nothing to stop" });
     } else {
-      this.setState({ errMes: "" });
+      this.setState({ errMes: "", loading: false });
 
       stream.post("/stopStream");
     }
@@ -57,11 +57,11 @@ class Main extends Component {
     } else {
       this.setState({ errMes: "", loading: true, error: true, saved: false });
 
-      const socket = socketIOClient({ path: "/socket.io" });
-      stream.post("/initialiseStream", { search });
-
-      // const socket = socketIOClient("http://localhost:8888");
+      // const socket = socketIOClient({ path: "/socket.io" });
       // stream.post("/initialiseStream", { search });
+
+      const socket = socketIOClient("http://localhost:8888");
+      stream.post("/initialiseStream", { search });
 
       let negative = [];
       let positive = [];
@@ -108,7 +108,8 @@ class Main extends Component {
           console.log(err); // this is changed from your code in last comment
         });
       } catch (e) {
-        console.log(e);
+        this.setState({ errMes: "Something went wrong" });
+        console.log("Oops with stream...");
       }
 
       // const socket = socketIOClient({ path: "/socket.io" });
@@ -138,38 +139,101 @@ class Main extends Component {
     });
   };
   saveResults = event => {
-    if (this.state.search === "") {
-      this.setState({ errMes: "Start the search first" });
-    } else {
-      this.setState({
-        errMes: "",
-        error: true,
-        loading: true,
-        saved: false
-      });
-      axios
-        .post("/saveDB", {
-          title: this.state.title,
-          negPercent: this.state.negPercent,
-          posPercent: this.state.posPercent,
-          negWords: this.state.negWords,
-          posWords: this.state.posWords,
-          positivePie: this.state.positivePie,
-          negativePie: this.state.negativePie
-        })
-        .then(() => {
-          this.setState({ saved: true, loading: false });
+    event.preventDefault();
+    try {
+      if (this.state.search === "") {
+        this.setState({ errMes: "Start the search first" });
+      } else {
+        this.setState({
+          errMes: "",
+          error: true,
+          loading: true,
+          saved: false
         });
+        axios
+          .post("/saveDB", {
+            title: this.state.title,
+            negPercent: this.state.negPercent,
+            posPercent: this.state.posPercent,
+            negWords: this.state.negWords,
+            posWords: this.state.posWords,
+            positivePie: this.state.positivePie,
+            negativePie: this.state.negativePie
+          })
+          .then(() => {
+            this.setState({ saved: true, loading: false });
+          });
+      }
+    } catch (e) {
+      this.setState({
+        error: true,
+        loading: false,
+        errMes: "Something happened bad happened"
+      });
     }
   };
   vaib = event => {
     event.preventDefault();
     try {
-      axios.post("/fib").then(data => {
-        console.log(data);
+      this.setState({
+        errMes: "Server starts overloading with fibonacci...",
+        loading: true
       });
+      axios
+        .post("/fib")
+        .then(data => {})
+        .then(() => {
+          this.setState({
+            errMes: "Overload completed please start again",
+            loading: false
+          });
+        });
     } catch (e) {
-      console.log("something went wrong");
+      this.setState({
+        error: true,
+        loading: false,
+        errMes: "Something happened bad happened"
+      });
+      console.log("Oops with dangerous load");
+    }
+  };
+  flick = event => {
+    event.preventDefault();
+    try {
+      let search = this.state.search;
+      if (this.state.search === "") {
+        this.setState({
+          errMes: "Enter the details to begin the search"
+        });
+      } else {
+        this.setState({
+          errMes: "Flickr starts overloading the server",
+          loading: true,
+          error: true,
+          saved: false
+        });
+        // for (let i = 0; i < 3; i++) {
+        axios
+          .post("/flick", { search })
+          .then(response => {
+            console.log(response);
+          })
+          .then(() => {
+            this.setState({
+              errMes: "Flickr loader finished, start again",
+              error: true,
+              loading: false
+            });
+          });
+        // }
+      }
+    } catch (e) {
+      this.setState({
+        error: true,
+        loading: false,
+        errMes: "Something happened bad happened"
+      });
+      console.log("Oops with flickr");
     }
   };
 
@@ -207,7 +271,12 @@ class Main extends Component {
         }
       }
     } catch (e) {
-      console.log("Oops");
+      this.setState({
+        error: true,
+        loading: false,
+        errMes: "Something happened bad happened"
+      });
+      console.log("Oops with static search...");
     }
   };
 
@@ -310,9 +379,16 @@ class Main extends Component {
                 <input
                   type="submit"
                   className={classess.Save}
+                  onClick={this.flick}
+                  name="static"
+                  value="Flickr load"
+                />
+                <input
+                  type="submit"
+                  className={classess.Ex}
                   onClick={this.vaib}
                   name="static"
-                  value="Init crazy load"
+                  value="Dangerous load"
                 />
               </div>
             </form>

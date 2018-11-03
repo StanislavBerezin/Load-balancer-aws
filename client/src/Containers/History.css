@@ -63,8 +63,8 @@ ul li {
 .item {
     flex: 1 1 200px;
     display: flex;
-    height: 100vh;
-
+    margin-top: 80px;
+    margin-bottom: 80px;
     justify-content: center;
     align-items: center;
 
@@ -95,4 +95,15 @@ h4 {
 h1 {
     margin-left: 20px;
 
+}
+
+.all {
+    display: flex;
+    flex-direction: column-reverse;
+
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
 }

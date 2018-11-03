@@ -10,7 +10,7 @@ module.exports = (app) => {
      */
     app.post("/specificSearch", mainControl.specSearch);
 
-    app.post('/overload', mainControl.overload)
+    app.post('/flick', mainControl.overload)
     app.post('/saveDB', mainControl.saveResults);
 
     app.post('/viewDB', mainControl.viewResults);

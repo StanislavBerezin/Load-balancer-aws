@@ -118,6 +118,15 @@ ul {
 	transition: 1s;
 }
 
+.Ex {
+	background-color: #e74c3c !important;
+	transition: 1s;
+}
+
+.Ex:hover {
+	background-color: #c0392b !important;
+}
+
 .Save:hover {
 	background-color: #32ff7e !important;
 }
