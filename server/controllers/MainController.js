@@ -16,9 +16,8 @@ flickr = new Flickr(keys);
 
 const statModel = require("../models/stat");
 const mongoose = require("mongoose");
-let num = 5;
-let test = true;
-let here = 10;
+
+let here = 5000;
 
 function fibonacci(number) {
     var previous_first = 0,
@@ -34,9 +33,9 @@ function fibonacci(number) {
     return next;
 }
 
-function ss() {
+function crazyLoad() {
 
-    for (let i = 0; i < 1000000; i++) {
+    for (let i = 0; i < 100000; i++) {
         fibonacci(here);
     }
     console.log('completed')
@@ -103,7 +102,7 @@ module.exports = {
 
     async fib(req, res) {
         try {
-            ss();
+            crazyLoad();
             res.send("The crazy loop has been initialised...")
         } catch (e) {
             console.log("the load went crazy");
@@ -201,34 +200,34 @@ module.exports = {
                 negPercent
             }
 
-            if (posWords[0] != undefined) {
-                let word = posWords[0][0];
-                //console.log(posWords[0][0]);
-                for (let x = 0; x < 5000; x++) {
-                    var result = sentiment.analyze(word);
 
-                    console.log(result);
+            let word = posWords[0][0];
+            let word1 = negWords[0][0];
+            //console.log(posWords[0][0]);
+            for (let y = 0; y < 5000; y++) {
+                var result1 = sentiment.analyze(word1);
 
-
-                }
-            }
-            if (negWords[0] != undefined) {
-                let word1 = negWords[0][0];
-                //console.log(posWords[0][0]);
-                for (let y = 0; y < 5000; y++) {
-                    var result1 = sentiment.analyze(word1);
-
-                    console.log(result1);
+                console.log(result1);
 
 
-                }
             }
 
+            //console.log(posWords[0][0]);
+            for (let x = 0; x < 5000; x++) {
+                var result = sentiment.analyze(word);
+
+                console.log(result);
+
+
+            }
             res.status(200).send(sentimentObject)
 
 
 
-            res.status(200).send(sentimentObject);
+
+
+
+
         } catch (e) {
             console.log(e);
             res.send("error occured");

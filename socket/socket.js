@@ -8,9 +8,7 @@ var twitter = new Twitter({
 });
 var sentiment = new Sentiment();
 
-var Flickr = require("node-flickr");
-var keys = {"api_key": "a5bc0ff84bf86a9d7b8e9313b4fa3388"}
-flickr = new Flickr(keys);
+
 
 module.exports = (app, io) => {
 
@@ -48,12 +46,12 @@ module.exports = (app, io) => {
                                 //  [...new Set(negative)];
                                 if (result.score > 0) {
                                     positive = [result.score].concat(positive);
-                                    
+
 
                                     posWords.push([result.positive[0]]);
 
-                                   
-                        
+
+
                                 } else {
                                     negative = [result.score].concat(negative);
                                     negWords.push([result.negative[0]]);
@@ -71,41 +69,11 @@ module.exports = (app, io) => {
                                     negativePie,
                                     posPercent,
                                     negPercent
-                                } 
-
-                                //flickr
-
-                                if(posWords[0]!= undefined)
-                                {
-                                    let word = posWords[0][0];
-                                    //console.log(posWords[0][0]);
-                                    for(let x=0;x<5000;x++)
-                                    {
-                                       var result= sentiment.analyze(word);
-
-                                       console.log(result);
-
-                                       
-                                    }
                                 }
 
-                                if(negWords[0]!= undefined)
-                                {
-                                    let word2 = negWords[0][0];
-                                    //console.log(posWords[0][0]);
-                                    for(let y=0;y<5000;y++)
-                                    {
-                                       var result2= sentiment.analyze(word2);
 
-                                       console.log(result2);
 
-                                       
-                                    }
-                                }
-
-                                //end flickr                              
-                                
-                            sendMessage(sentimentObject)
+                                sendMessage(sentimentObject)
 
                                 negWords = []
                                 posWords = []
@@ -120,7 +88,7 @@ module.exports = (app, io) => {
                 );
             }
         } catch (e) {
-            console.log(e)
+            console.log("Oops")
         }
 
 

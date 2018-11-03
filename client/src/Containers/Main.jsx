@@ -57,11 +57,11 @@ class Main extends Component {
     } else {
       this.setState({ errMes: "", loading: true, error: true, saved: false });
 
-      // const socket = socketIOClient({ path: "/socket.io" });
-      // stream.post("/initialiseStream", { search });
-
-      const socket = socketIOClient("http://localhost:8888");
+      const socket = socketIOClient({ path: "/socket.io" });
       stream.post("/initialiseStream", { search });
+
+      // const socket = socketIOClient("http://localhost:8888");
+      // stream.post("/initialiseStream", { search });
 
       let negative = [];
       let positive = [];
@@ -164,44 +164,50 @@ class Main extends Component {
   };
   vaib = event => {
     event.preventDefault();
-    
-    axios.post("/fib").then(data => {
-      console.log(data);
-    });
+    try {
+      axios.post("/fib").then(data => {
+        console.log(data);
+      });
+    } catch (e) {
+      console.log("something went wrong");
+    }
   };
-
 
   handleStaticSearch = event => {
     event.preventDefault();
     this.setDefault();
-    let search = this.state.search;
-    let negative = [];
-    let positive = [];
-    if (this.state.search === "") {
-      this.setState({ errMes: "Enter the details to begin the search" });
-    } else {
-      this.setState({ errMes: "", loading: true, error: true, saved: false });
-      for (let i = 0; i < 5; i++) {
-        axios
-          .post("/specificSearch", { search })
-          .then(response => {
-            this.mapThrough(response.data.negWords, negative);
-            this.mapThrough(response.data.posWords, positive);
-            positive = [...new Set(positive)];
-            negative = [...new Set(negative)];
-            this.setState({
-              negWords: negative,
-              posWords: positive,
-              positivePie: response.data.positivePie,
-              negativePie: response.data.negativePie,
-              posPercent: response.data.posPercent,
-              negPercent: response.data.negPercent
+    try {
+      let search = this.state.search;
+      let negative = [];
+      let positive = [];
+      if (this.state.search === "") {
+        this.setState({ errMes: "Enter the details to begin the search" });
+      } else {
+        this.setState({ errMes: "", loading: true, error: true, saved: false });
+        for (let i = 0; i < 3; i++) {
+          axios
+            .post("/specificSearch", { search })
+            .then(response => {
+              this.mapThrough(response.data.negWords, negative);
+              this.mapThrough(response.data.posWords, positive);
+              positive = [...new Set(positive)];
+              negative = [...new Set(negative)];
+              this.setState({
+                negWords: negative,
+                posWords: positive,
+                positivePie: response.data.positivePie,
+                negativePie: response.data.negativePie,
+                posPercent: response.data.posPercent,
+                negPercent: response.data.negPercent
+              });
+            })
+            .then(() => {
+              this.setState({ error: false, loading: false });
             });
-          })
-          .then(() => {
-            this.setState({ error: false, loading: false });
-          });
+        }
       }
+    } catch (e) {
+      console.log("Oops");
     }
   };
 
@@ -306,14 +312,7 @@ class Main extends Component {
                   className={classess.Save}
                   onClick={this.vaib}
                   name="static"
-                  value="Init load"
-                />
-                <input
-                  type="submit"
-                  className={classess.Save}
-                  onClick={this.vaibStop}
-                  name="static"
-                  value="Stop load"
+                  value="Init crazy load"
                 />
               </div>
             </form>
