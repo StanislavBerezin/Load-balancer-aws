@@ -2,7 +2,7 @@ version: "3"
 services:
   nginx:
     restart: always
-    image: coconicola/nginx
+    image: coconicola/nginx_v1
     build:
       dockerfile: Dockerfile
       context: ./nginx
@@ -15,7 +15,7 @@ services:
       - socket
   # api is the server, dont call it server because of the configurations in nginx
   api:
-    image: coconicola/server
+    image: coconicola/server_v1
     # so need to build that container
     build:
       # use the dockerfile with our info there
@@ -23,7 +23,7 @@ services:
 
       context: ./server
   socket:
-    image: coconicola/socket
+    image: coconicola/socket_v1
     # so need to build that container
     build:
       # use the dockerfile with our info there
@@ -32,7 +32,7 @@ services:
       context: ./socket
 
   client:
-    image: coconicola/client
+    image: coconicola/client_v1
     build:
       dockerfile: Dockerfile
       context: ./client
